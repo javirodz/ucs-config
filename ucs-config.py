@@ -65,7 +65,7 @@ iSCSI = True
 FC = False
 
 #Create the handle
-handle = UcsHandle("192.168.67.148","admin","password",secure=False)
+handle = UcsHandle("10.2.2.100","admin","password",secure=False)
 #login into UCS manager
 handle.login()
 
@@ -113,10 +113,11 @@ handle.commit()
 
 #Create Production VLANs
 k = 1
-while k < len(VLAN_Name):
+while k < 4:
     mo = FabricVlan(parent_mo_or_dn="fabric/lan", sharing="none", name=VLAN_Name[k], id=VLAN_ID[k], mcast_policy_name="", policy_owner="local", default_net="no", pub_nw_name="", compression_type="included")
     handle.add_mo(mo)
     handle.commit()
+    print k
     k = k+1
 
 #Create UUID Pool
@@ -132,8 +133,8 @@ mo_2 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="2", chassis_id="1")
 mo_3 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="3", chassis_id="1")
 mo_4 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="4", chassis_id="1")
 mo_5 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="5", chassis_id="1")
-mo_6 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="7", chassis_id="1")
-mo_7 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="8", chassis_id="1")
+#mo_6 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="6", chassis_id="1")
+#mo_7 = ComputePooledSlot(parent_mo_or_dn=mo, slot_id="7", chassis_id="1")
 handle.add_mo(mo)
 handle.commit()
 
@@ -154,12 +155,12 @@ handle.add_mo(mo)
 handle.commit()
 
 #Create MAC Pools
-mo = MacpoolPool(parent_mo_or_dn=my_Full_Path_Org, policy_owner="local", descr="Mamagement FI-A", assignment_order="sequential", name="MGMT-A")
+mo = MacpoolPool(parent_mo_or_dn=my_Full_Path_Org, policy_owner="local", descr="Management FI-A", assignment_order="sequential", name="MGMT-A")
 mo_1 = MacpoolBlock(parent_mo_or_dn=mo, to="00:25:B5:A0:00:0F", r_from="00:25:B5:A0:00:00")
 handle.add_mo(mo)
 handle.commit()
 
-mo = MacpoolPool(parent_mo_or_dn=my_Full_Path_Org, policy_owner="local", descr="Mamagement FI-B", assignment_order="sequential", name="MGMT-B")
+mo = MacpoolPool(parent_mo_or_dn=my_Full_Path_Org, policy_owner="local", descr="Management FI-B", assignment_order="sequential", name="MGMT-B")
 mo_1 = MacpoolBlock(parent_mo_or_dn=mo, to="00:25:B5:B0:00:0F", r_from="00:25:B5:B0:00:00")
 handle.add_mo(mo)
 handle.commit()
@@ -223,35 +224,35 @@ handle.commit()
 
 mo = VnicLanConnTempl(parent_mo_or_dn=my_Full_Path_Org, templ_type="updating-template", name="VM-A", descr="Production FI-A", stats_policy_name="default", admin_cdn_name="", switch_id="A", pin_to_group_name="", mtu="1500", policy_owner="local", qos_policy_name="", ident_pool_name="VM-A", cdn_source="vnic-name", nw_ctrl_policy_name="CDP_EN")
 #Depending on the VLANs that will pass wot the NIC:
-mo_1 = VnicEtherIf(parent_mo_or_dn=mo, default_net="no", name=Production)
+#mo_1 = VnicEtherIf(parent_mo_or_dn=mo, default_net="no", name=Production)
 #mo_2 = VnicEtherIf(parent_mo_or_dn=mo, default_net="no", name="VLAN_800")
 handle.add_mo(mo)
 handle.commit()
 
 mo = VnicLanConnTempl(parent_mo_or_dn=my_Full_Path_Org, templ_type="updating-template", name="VM-B", descr="Production FI-B", stats_policy_name="default", admin_cdn_name="", switch_id="B", pin_to_group_name="", mtu="1500", policy_owner="local", qos_policy_name="", ident_pool_name="VM-B", cdn_source="vnic-name", nw_ctrl_policy_name="CDP_EN")
 #Depending on the VLANs that will pass wot the NIC:
-mo_1 = VnicEtherIf(parent_mo_or_dn=mo, default_net="no", name=Production)
+#mo_1 = VnicEtherIf(parent_mo_or_dn=mo, default_net="no", name=Production)
 #mo_2 = VnicEtherIf(parent_mo_or_dn=mo, default_net="no", name="VLAN_800")
 handle.add_mo(mo)
 handle.commit()
 
 if(iSCSI):
-    #Create iSCSI-A VLAN on FI-A (ID 2550)
-    mo = FabricVlan(parent_mo_or_dn="fabric/eth-estc/A", sharing="none", name="iSCSI-A", id="2550", mcast_policy_name="", policy_owner="local", default_net="no", pub_nw_name="", compression_type="included")
+    #Create iSCSI-A VLAN on FI-A (ID 1000)
+    mo = FabricVlan(parent_mo_or_dn="fabric/eth-estc/A", sharing="none", name="iSCSI-A", id="1000", mcast_policy_name="", policy_owner="local", default_net="no", pub_nw_name="", compression_type="included")
+    handle.add_mo(mo)
+    handle.commit()
+#
+    #Create iSCSI-B VLAN on FI-B (ID 2000)
+    mo = FabricVlan(parent_mo_or_dn="fabric/eth-estc/B", sharing="none", name="iSCSI-B", id="2000", mcast_policy_name="", policy_owner="local", default_net="no", pub_nw_name="", compression_type="included")
     handle.add_mo(mo)
     handle.commit()
 
-    #Create iSCSI-B VLAN on FI-B (ID 2551)
-    mo = FabricVlan(parent_mo_or_dn="fabric/eth-estc/B", sharing="none", name="iSCSI-B", id="2551", mcast_policy_name="", policy_owner="local", default_net="no", pub_nw_name="", compression_type="included")
-    handle.add_mo(mo)
-    handle.commit()
-
-    mo = VnicLanConnTempl(parent_mo_or_dn=my_Full_Path_Org, templ_type="updating-template", name="iSCSI-A", descr="iSCSI FI-A", stats_policy_name="default", admin_cdn_name="", switch_id="A", pin_to_group_name="", mtu="1500", policy_owner="local", qos_policy_name="", ident_pool_name="iSCSI-A", cdn_source="vnic-name", nw_ctrl_policy_name="CDP_EN")
+    mo = VnicLanConnTempl(parent_mo_or_dn=my_Full_Path_Org, templ_type="updating-template", name="iSCSI-A", descr="iSCSI FI-A", stats_policy_name="default", admin_cdn_name="", switch_id="A", pin_to_group_name="", mtu="9000", policy_owner="local", qos_policy_name="Nimble-QoS", ident_pool_name="iSCSI-A", cdn_source="vnic-name", nw_ctrl_policy_name="Nimble-iSCSI")
     mo_1 = VnicEtherIf(parent_mo_or_dn=mo, default_net="yes", name="iSCSI-A")
     handle.add_mo(mo)
     handle.commit()
 
-    mo = VnicLanConnTempl(parent_mo_or_dn=my_Full_Path_Org, templ_type="updating-template", name="iSCSI-B", descr="iSCSI FI-B", stats_policy_name="default", admin_cdn_name="", switch_id="B", pin_to_group_name="", mtu="1500", policy_owner="local", qos_policy_name="", ident_pool_name="iSCSI-B", cdn_source="vnic-name", nw_ctrl_policy_name="CDP_EN")
+    mo = VnicLanConnTempl(parent_mo_or_dn=my_Full_Path_Org, templ_type="updating-template", name="iSCSI-B", descr="iSCSI FI-B", stats_policy_name="default", admin_cdn_name="", switch_id="B", pin_to_group_name="", mtu="9000", policy_owner="local", qos_policy_name="Nimble-QoS", ident_pool_name="iSCSI-B", cdn_source="vnic-name", nw_ctrl_policy_name="Nimble-iSCSI")
     mo_1 = VnicEtherIf(parent_mo_or_dn=mo, default_net="yes", name="iSCSI-B")
     handle.add_mo(mo)
     handle.commit()
@@ -284,38 +285,38 @@ if(FC):
 
 #Configuring Uplink ports
 #FI-A Port-3
-mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
-handle.add_mo(mo)
-handle.commit()
-#FI-A Port-4
-mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
-handle.add_mo(mo)
-handle.commit()
+#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
+#handle.add_mo(mo)
+#handle.commit()
+##FI-A Port-4
+#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
+#handle.add_mo(mo)
+#handle.commit()
 #FI-B Port-3
-mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
-handle.add_mo(mo)
-handle.commit()
+#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
+#handle.add_mo(mo)
+#handle.commit()
 #FI-B Port-4
-mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
-handle.add_mo(mo)
-handle.commit()
+#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
+#handle.add_mo(mo)
+#handle.commit()
 #Configure Port Channels
 #PC-50 with FI-A P3 and FI-A P4
-mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/A", name="PC-50", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="50", lacp_policy_name="default")
-mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
-mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
-handle.add_mo(mo)
-handle.commit()
+#mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/A", name="PC-50", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="50", lacp_policy_name="default")
+#mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
+#mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
+#handle.add_mo(mo)
+#handle.commit()
 #PC-51 with FI-B P3 and FI-B P4
-mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/B", name="PC-51", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="51", lacp_policy_name="default")
-mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
-mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
-handle.add_mo(mo)
-handle.commit()
+#mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/B", name="PC-51", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="51", lacp_policy_name="default")
+#mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
+#mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
+#handle.add_mo(mo)
+#handle.commit()
 
 #Create Service Profile Template
 if (FC and not iSCSI):
-    mo = LsServer(parent_mo_or_dn="org-root/org-Test_Org", vmedia_policy_name="", ext_ip_state="none", bios_profile_name="", mgmt_fw_policy_name="", agent_policy_name="", mgmt_access_policy_name="", dynamic_con_policy_name="", kvm_mgmt_policy_name="", sol_policy_name="", uuid="0", descr="SPT Description", stats_policy_name="default", policy_owner="local", ext_ip_pool_name="ext-mgmt", boot_policy_name="Boot_Policy", usr_lbl="", host_fw_policy_name="", vcon_profile_name="", ident_pool_name="UUID_POOL", src_templ_name="", type="initial-template", local_disk_policy_name="Local_Disk_CP", scrub_policy_name="", power_policy_name="default", maint_policy_name="User_Ack", name=my_SPT, resolve_remote="yes")
+    mo = LsServer(parent_mo_or_dn=my_Full_Path_Org, vmedia_policy_name="", ext_ip_state="none", bios_profile_name="", mgmt_fw_policy_name="", agent_policy_name="", mgmt_access_policy_name="", dynamic_con_policy_name="", kvm_mgmt_policy_name="", sol_policy_name="", uuid="0", descr="SPT Description", stats_policy_name="default", policy_owner="local", ext_ip_pool_name="ext-mgmt", boot_policy_name="Boot_Policy", usr_lbl="", host_fw_policy_name="", vcon_profile_name="", ident_pool_name="UUID_POOL", src_templ_name="", type="initial-template", local_disk_policy_name="Local_Disk_CP", scrub_policy_name="", power_policy_name="default", maint_policy_name="User_Ack", name=my_SPT, resolve_remote="yes")
     mo_1 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="1", transport="ethernet", vnic_name="MGMT-A")
     mo_2 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="2", transport="ethernet", vnic_name="MGMT-B")
     mo_3 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="3", transport="ethernet", vnic_name="VM-A")
@@ -341,7 +342,7 @@ if (FC and not iSCSI):
     handle.commit()
 
 if(iSCSI and not FC):
-    mo = LsServer(parent_mo_or_dn="org-root/org-Test_Org", vmedia_policy_name="", ext_ip_state="none", bios_profile_name="", mgmt_fw_policy_name="", agent_policy_name="", mgmt_access_policy_name="", dynamic_con_policy_name="", kvm_mgmt_policy_name="", sol_policy_name="", uuid="0", descr="SPT Desc", stats_policy_name="default", policy_owner="local", ext_ip_pool_name="ext-mgmt", boot_policy_name="Boot_Policy", usr_lbl="", host_fw_policy_name="", vcon_profile_name="", ident_pool_name="UUID_POOL", src_templ_name="", type="updating-template", local_disk_policy_name="Local_Disk_CP", scrub_policy_name="", power_policy_name="default", maint_policy_name="User_Ack", name=my_SPT, resolve_remote="yes")
+    mo = LsServer(parent_mo_or_dn=my_Full_Path_Org, vmedia_policy_name="", ext_ip_state="none", bios_profile_name="", mgmt_fw_policy_name="", agent_policy_name="", mgmt_access_policy_name="", dynamic_con_policy_name="", kvm_mgmt_policy_name="", sol_policy_name="", uuid="0", descr="SPT Desc", stats_policy_name="default", policy_owner="local", ext_ip_pool_name="ext-mgmt", boot_policy_name="Boot_Policy", usr_lbl="", host_fw_policy_name="", vcon_profile_name="", ident_pool_name="UUID_POOL", src_templ_name="", type="updating-template", local_disk_policy_name="Local_Disk_CP", scrub_policy_name="", power_policy_name="default", maint_policy_name="User_Ack", name=my_SPT, resolve_remote="yes")
     mo_1 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="1", transport="ethernet", vnic_name="MGMT-A")
     mo_2 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="2", transport="ethernet", vnic_name="MGMT-B")
     mo_3 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="3", transport="ethernet", vnic_name="VM-A")
@@ -365,7 +366,7 @@ if(iSCSI and not FC):
     handle.commit()
 
 if(iSCSI and FC):
-    mo = LsServer(parent_mo_or_dn="org-root/org-Test_Org", vmedia_policy_name="", ext_ip_state="none", bios_profile_name="", mgmt_fw_policy_name="", agent_policy_name="", mgmt_access_policy_name="", dynamic_con_policy_name="", kvm_mgmt_policy_name="", sol_policy_name="", uuid="0", descr="SPT Description", stats_policy_name="default", policy_owner="local", ext_ip_pool_name="ext-mgmt", boot_policy_name="Boot_Policy", usr_lbl="", host_fw_policy_name="", vcon_profile_name="", ident_pool_name="UUID_POOL", src_templ_name="", type="updating-template", local_disk_policy_name="Local_Disk_CP", scrub_policy_name="", power_policy_name="default", maint_policy_name="User_Ack", name=my_SPT, resolve_remote="yes")
+    mo = LsServer(parent_mo_or_dn=my_Full_Path_Org, vmedia_policy_name="", ext_ip_state="none", bios_profile_name="", mgmt_fw_policy_name="", agent_policy_name="", mgmt_access_policy_name="", dynamic_con_policy_name="", kvm_mgmt_policy_name="", sol_policy_name="", uuid="0", descr="SPT Description", stats_policy_name="default", policy_owner="local", ext_ip_pool_name="ext-mgmt", boot_policy_name="Boot_Policy", usr_lbl="", host_fw_policy_name="", vcon_profile_name="", ident_pool_name="UUID_POOL", src_templ_name="", type="updating-template", local_disk_policy_name="Local_Disk_CP", scrub_policy_name="", power_policy_name="default", maint_policy_name="User_Ack", name=my_SPT, resolve_remote="yes")
     mo_1 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="1", transport="ethernet", vnic_name="MGMT-A")
     mo_2 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="2", transport="ethernet", vnic_name="MGMT-B")
     mo_3 = LsVConAssign(parent_mo_or_dn=mo, admin_vcon="any", admin_host_port="ANY", order="3", transport="ethernet", vnic_name="VM-A")
@@ -396,6 +397,4 @@ if(iSCSI and FC):
 
 # Logout after script is executed
 handle.logout()
-
-#close the ucs-book.csv file
 my_file.close()
