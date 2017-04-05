@@ -65,7 +65,7 @@ iSCSI = True
 FC = False
 
 #Create the handle
-handle = UcsHandle("10.2.2.100","admin","password",secure=False)
+handle = UcsHandle("10.242.100.90","admin","password",secure=False)
 #login into UCS manager
 handle.login()
 
@@ -285,34 +285,34 @@ if(FC):
 
 #Configuring Uplink ports
 #FI-A Port-3
-#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
-#handle.add_mo(mo)
-#handle.commit()
-##FI-A Port-4
-#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
-#handle.add_mo(mo)
-#handle.commit()
+mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
+handle.add_mo(mo)
+handle.commit()
+#FI-A Port-4
+mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/A", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
+handle.add_mo(mo)
+handle.commit()
 #FI-B Port-3
-#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
-#handle.add_mo(mo)
-#handle.commit()
+mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="3")
+handle.add_mo(mo)
+handle.commit()
 #FI-B Port-4
-#mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
-#handle.add_mo(mo)
-#handle.commit()
+mo = FabricEthLanEp(parent_mo_or_dn="fabric/lan/B", eth_link_profile_name="default", name="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", usr_lbl="", slot_id="1", admin_state="enabled", port_id="4")
+handle.add_mo(mo)
+handle.commit()
 #Configure Port Channels
 #PC-50 with FI-A P3 and FI-A P4
-#mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/A", name="PC-50", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="50", lacp_policy_name="default")
-#mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
-#mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
-#handle.add_mo(mo)
-#handle.commit()
+mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/A", name="PC-50", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="50", lacp_policy_name="default")
+mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
+mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
+handle.add_mo(mo)
+handle.commit()
 #PC-51 with FI-B P3 and FI-B P4
-#mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/B", name="PC-51", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="51", lacp_policy_name="default")
-#mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
-#mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
-#handle.add_mo(mo)
-#handle.commit()
+mo = FabricEthLanPc(parent_mo_or_dn="fabric/lan/B", name="PC-51", descr="", flow_ctrl_policy="default", admin_speed="10gbps", auto_negotiate="yes", admin_state="enabled", oper_speed="10gbps", port_id="51", lacp_policy_name="default")
+mo_1 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="3")
+mo_2 = FabricEthLanPcEp(parent_mo_or_dn=mo, eth_link_profile_name="default", name="", auto_negotiate="yes", slot_id="1", admin_state="enabled", port_id="4")
+handle.add_mo(mo)
+handle.commit()
 
 #Create Service Profile Template
 if (FC and not iSCSI):
