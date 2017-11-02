@@ -113,7 +113,7 @@ handle.commit()
 
 #Create Production VLANs
 k = 1
-while k < 4:
+while k < len(VLAN_ID):
     mo = FabricVlan(parent_mo_or_dn="fabric/lan", sharing="none", name=VLAN_Name[k], id=VLAN_ID[k], mcast_policy_name="", policy_owner="local", default_net="no", pub_nw_name="", compression_type="included")
     handle.add_mo(mo)
     handle.commit()
